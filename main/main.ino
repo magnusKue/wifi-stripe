@@ -1,6 +1,7 @@
 #include <FastLED.h>
 #include <WiFi.h>
 
+
 #define NUM_LEDS 120
 #define DATA_PIN 5
 #define LED_TYPE WS2812B
@@ -8,8 +9,6 @@
 #define LED_R       17
 #define LED_B       18
 #define LED_G       19  
-
-#define SPEEDCREASE 2
 
 CRGB leds[NUM_LEDS];
 
@@ -21,6 +20,7 @@ const char* password = "qwer5671";
 
 // Set web server port number to 80
 WiFiServer server(80);
+String mode = "OFF";
 
 
 // Current time
@@ -57,13 +57,15 @@ void connectToWifi() {
   Serial.println(ssid);
   
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
+    handleLEDs();
+    FastLED.show();
   }
   
   digitalWrite(LED_R, LOW);
   digitalWrite(LED_G, HIGH);
   Serial.println("\nWifi connected!");
+
+  
 }
 
 void sendSuccessResponse(WiFiClient &client) {
@@ -73,7 +75,7 @@ void sendSuccessResponse(WiFiClient &client) {
 }
 
 void handleClient(WiFiClient client) {
-  String postData = "";                   // String to hold the HTTP request
+    String postData = "";                   // String to hold the HTTP request
     boolean bodyStarted = false;
 
     // reead from client until disconnection or timeout
@@ -129,12 +131,37 @@ void handleClient(WiFiClient client) {
       }
 
         fill_solid(leds, NUM_LEDS, color);
+        mode = "COL";
+    }
+    else if (head == "WAV"){
+      mode = "WAV";
+    }
+    else if (head == "OFF") 
+    {
+      mode = "OFF";
+      fill_solid(leds, NUM_LEDS, CRGB(0,0,0));
     }
     else
       Serial.println("head not implemented: " + head);
-    
-
     FastLED.show();
+}
+
+void handleLEDs() {
+  if (mode == "COL"){ 
+    // do nothing
+  }
+
+  else if (mode == "OFF") {
+    // do nothing
+  }
+
+  else if (mode == "WAV") {
+    // do nothing
+    updateLEDs(leds);
+    shiftAll(leds);
+  }
+    
+  
 }
 
 void setup() {
@@ -168,4 +195,7 @@ void loop(){
     Serial.println("Wifi connection lost.");
     connectToWifi();
   }
+
+  handleLEDs();
+  FastLED.show();
 }
