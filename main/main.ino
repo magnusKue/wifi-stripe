@@ -14,9 +14,13 @@ CRGB leds[NUM_LEDS];
 
 char *tokenList[10];
 
+
 // Replace with your network credentials
 const char* ssid = "magnus🥚phone";
 const char* password = "qwer5671";  
+
+//const char* ssid = "ROM Fritz 6591";
+//const char* password = "DINGO@hulm*0314#"; 
 
 // Set web server port number to 80
 WiFiServer server(80);
@@ -160,6 +164,7 @@ void handleLEDs() {
     // do nothing
     updateLEDs(leds);
     shiftAll(leds);
+    delay(80);
   }
     
   
