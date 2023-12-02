@@ -135,6 +135,7 @@ void handleClient(WiFiClient client) {
     }
     else if (head == "WAV"){
       mode = "WAV";
+      fill_solid(leds, NUM_LEDS, CRGB(0,0,0));
     }
     else if (head == "OFF") 
     {
