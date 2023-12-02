@@ -1,7 +1,7 @@
 #include <FastLED.h>
 #include "GPLC_Pins.h"
 
-#define NUM_LEDS 120
+#define NUM_LEDS 240
 #define DATA_PIN 5
 #define LED_TYPE WS2812B
 

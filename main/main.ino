@@ -2,7 +2,7 @@
 #include <WiFi.h>
 
 
-#define NUM_LEDS 120
+#define NUM_LEDS 240
 #define DATA_PIN 5
 #define LED_TYPE WS2812B
 
@@ -16,11 +16,9 @@ char *tokenList[10];
 
 
 // Replace with your network credentials
-const char* ssid = "magnus🥚phone";
-const char* password = "qwer5671";  
+const char* ssid = "ssid";
+const char* password = "pswd"; 
 
-//const char* ssid = "ROM Fritz 6591";
-//const char* password = "DINGO@hulm*0314#"; 
 
 // Set web server port number to 80
 WiFiServer server(80);
@@ -138,13 +136,22 @@ void handleClient(WiFiClient client) {
         mode = "COL";
     }
     else if (head == "WAV"){
-      mode = "WAV";
+      mode = head;
       fill_solid(leds, NUM_LEDS, CRGB(0,0,0));
     }
     else if (head == "OFF") 
     {
-      mode = "OFF";
+      mode = head;
       fill_solid(leds, NUM_LEDS, CRGB(0,0,0));
+    }
+    else if (head == "FAL") {
+      mode = head;
+    }
+    else if (head == "SPR") {
+      mode = head;
+    }
+    else if (head == "SXY") {
+      mode = head;
     }
     else
       Serial.println("head not implemented: " + head);
@@ -166,7 +173,22 @@ void handleLEDs() {
     shiftAll(leds);
     delay(80);
   }
-    
+
+  else if (mode == "FAL") {
+    leds[random(NUM_LEDS)] = CRGB(random(255), random(30), 0);
+  }  
+
+  else if (mode == "SPR"){
+    if (random(100) > 20)
+      leds[random(NUM_LEDS)] = CHSV(random(5)+130, 255, 120);
+    else
+      leds[random(NUM_LEDS)] = CHSV(random(30)+108, 255, 255);
+
+  }
+
+  else if (mode == "SXY"){
+    leds[random(NUM_LEDS)] = CRGB(random(255), random(4), 0);
+  }
   
 }
 
@@ -176,6 +198,8 @@ void setup() {
 
   FastLED.addLeds<LED_TYPE, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.setBrightness(64);
+
+  randomSeed(analogRead(A0));
   Serial.begin(115200);
 
   WiFi.begin(ssid, password);
